@@ -2,8 +2,7 @@ type Tagged = {_tag: string}
 
 type Tags<TUnionType extends Tagged> = TUnionType['_tag']
 
-type TagTypeMap<TUnionType extends Tagged, TTags=Tags<TUnionType>> = {
-  // @ts-ignore
+type TagTypeMap<TUnionType extends Tagged, TTags extends string = Tags<TUnionType>> = {
   [TTag in TTags]: TUnionType extends {_tag: TTag} ? TUnionType : never
 }
 
@@ -26,13 +25,16 @@ type Rectangle = {xlen: number, ylen: number, _tag: 'Rectangle'}
 
 type Shape = Square | Circle | Rectangle
 
+type Test1 = TagTypeMap<Shape>
+type Test2 = Patt<string, Test1>
+
 const shapeDescription: Pattern<string, Shape> = {
   Square: ({len}) => `I am square with length ${len}`,
   Circle: ({rad}) => `I am circle with radius ${rad}`,
   Rectangle: ({xlen, ylen}) => `I am rectangle with sides ${xlen} and ${ylen}`
 }
 
-const shapes = [
+const shapes: Shape[] = [
   {len: 1, _tag: 'Square'},
   {rad: 2, _tag: 'Circle'},
   {xlen: 3, ylen: 4, _tag: 'Rectangle'}
